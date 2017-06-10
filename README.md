@@ -1,0 +1,2 @@
+<b>Caesar's Cipher!</b>
+This program is a tool for encrypting strings using the shift cipher method, made famous by Caesar himself. If building with the rule 'make limited,' only the code responsible for encryption is compiled. This was originally invented because I gave this to a friend of mine to try and crack. A little game we had. It didn't take him long, as you can imagine.
