@@ -23,28 +23,33 @@
  * TYPE DEFINITIONS
  ***/
 
+#ifndef CONFIG_LIMITED
 typedef enum _VALUE_ {
   
   HEX = 0,
   DEC = 1
 
 } VALUE;
+#endif /* CONFIG_LIMITED */
 
 typedef struct _cipher_options_ {
 
-  int print_as_digits;
   int key;
   char action;
+
+#ifndef CONFIG_LIMITED
+  int print_as_digits;
   VALUE value;
+#endif /* CONFIG_LIMITED */
 
 } cipher_options;
 
 /*******************************************************************************
  * MACRO DEFINITIONS
  ***/
-
+#ifndef CONFIG_LIMITED
 #define USAGE \
-  "cipher: [.key <num>] [.print_as_digits <1 | 0>] [.value <enum>] [.d | .e] " \
+  "cipher [.key <num>] [.print_as_digits <1 | 0>] [.value <enum>] [.d | .e] " \
   "<string>\n\n" \
   "\t.key - sets the key for encryption to be <num>, where <num> is a digit" \
   " between 0 and 25.\n" \
@@ -59,7 +64,18 @@ typedef struct _cipher_options_ {
   "\t\tDEC:  use the decimal ascii value.\n" \
   "\t\tOCT:  NOT YET SUPPORTED\n" \
   "\t\tHTML: NOT YET SUPPORTED\n" \
+  "\t<string> - A string to be encrypted or decrypted. Please make sure to" \
+  " surround the string with double quotation marks, as the shell doesn't" \
+  " play nicely with spaces or special characters.\n" \
   "\n"
+#else
+#define USAGE \
+  "cipher <string>\n\n" \
+  "\t<string> - A string to be encrypted or decrypted. Please make sure to" \
+  " surround the string with double quotation marks, as the shell doesn't" \
+  " play nicely with spaces or special characters.\n" \
+  "\n"
+#endif /* CONFIG_LIMITED */
 
 #endif /* __ET_MAIN_H__ */
 
