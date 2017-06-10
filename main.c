@@ -41,7 +41,9 @@ extern const int caesars_key;
  ***/
 
 static inline void error_exit(char *);
+#ifndef CONFIG_LIMITED
 static void format_digits(const char * restrict, char *);
+#endif /* CONFIG_LIMITED */
 
 /*******************************************************************************
  * MAIN
@@ -63,10 +65,20 @@ int main(int argc, char * argv[])
     error_exit(USAGE);
 
   opts = (cipher_options *)malloc(sizeof(cipher_options));
-  *opts = (cipher_options){.print_as_digits = 0, .key = DEFAULT_KEY,
-			  .action = 'e', .value = (VALUE)0};
+
+  *opts = (cipher_options){
+
+    .key = DEFAULT_KEY,
+    .action = 'e',
+#ifndef CONFIG_LIMITED
+    .print_as_digits = 0,
+    .value = (VALUE)0
+#endif /* CONFIG_LIMITED */
+  };
+
   string = NULL;
 
+#ifndef CONFIG_LIMITED
   for(int i = 1; i < argc; i++) {
 
     if (!strcmp(argv[i], ".key")) {
@@ -110,22 +122,34 @@ int main(int argc, char * argv[])
       strcpy(string, argv[i]);
 
     }
-
   }
+#else
+  if (argc != 2)
+    error_exit(USAGE);
+
+  string = (char *)malloc((strlen(argv[1]) + 1) * sizeof(char));
+  strcpy(string, argv[1]);
+#endif /* CONFIG_LIMITED */
 
   if (string != NULL) {
 
     output = (char *)malloc((strlen(string) + 1) * sizeof(char));
     if (opts->action == 'e') {
+
       if (cipher_encode(opts->key, string, &output))
 	error_exit("There was an error in cipher_encode.\n");
+
+#ifndef CONFIG_LIMITED
     } else if (opts->action == 'd') {
+
       if (cipher_decode(opts->key, string, &output))
 	error_exit("There was an error in cipher_decode.\n");
-    } else error_exit(USAGE);
+#endif /* CONFIG_LIMITED */
 
+    } else error_exit(USAGE);
   } else error_exit(USAGE);
 
+#ifndef CONFIG_LIMITED
   if (opts->print_as_digits) {
       
     if (opts->value == HEX)
@@ -134,7 +158,9 @@ int main(int argc, char * argv[])
       format_digits("%2d", output);
     else error_exit(USAGE);
       
-  } else printf("%s\n", output);
+  } else
+#endif /* CONFIG_LIMITED */
+    printf("%s\n", output);
 
   free(string);
   free(output);
@@ -152,6 +178,7 @@ static inline void error_exit(char * msg)
   exit(1);
 }
 
+#ifndef CONFIG_LIMITED
 static void format_digits(const char * restrict format, char * string)
 {
   char * pC;
@@ -167,5 +194,6 @@ static void format_digits(const char * restrict format, char * string)
   printf("\n");
   return;
 }
+#endif /* CONFIG_LIMITED */
 
 /******************************************************************************/
