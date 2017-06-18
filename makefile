@@ -16,7 +16,7 @@ $(P): $(OBJECTS)
 
 .PHONY: debug limited clean
 
-CFLAGS_DEBUG = -g -O0 -Wall -I ./include/
+CFLAGS_DEBUG = -g -pg -O0 -Wall -I ./include/
 
 debug:
 	$(CC) $(CFLAGS_DEBUG) -o $(P) $(OBJECTS) $(LDLIBS)
